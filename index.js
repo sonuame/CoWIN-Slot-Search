@@ -1,8 +1,15 @@
 let fetch = require('node-fetch');
 
-let state = process.argv[2];
-let city = process.argv[3];
-let polling_interval = process.argv[4];
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
+const argv = yargs(hideBin(process.argv)).argv
+
+
+let state = argv.state;
+let city = argv.city;
+let polling_interval = argv.polling;
+let age = argv.age
+let date = argv.date
 
 polling_interval = polling_interval < 5000 ? 5000 : polling_interval;
 
@@ -31,7 +38,6 @@ let findDistrict = async (stateId, city) => {
 
 let processCenters = (centers) => {
     let _centers = centers
-                    .filter(m => !!m.sessions.find(n => n.available_capacity > 0))
                     .map(c => ({
                         name : c.name,
                         address : c.address,
@@ -66,15 +72,17 @@ let userFriendlyPrint = (centers) => {
 let findSlots = async (ageLimit, districtId, date, pinCode) => {
     let result = await fetch(`${host}/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtId}&date=${date}`, { headers : headers });
     result = await result.json();
-    return result.centers;
+    return result.centers.filter(m => m.sessions.filter(n => n.available_capacity > 0 && n.min_age_limit === ageLimit).length > 0);
 }
 
 
 
 let polling = async () => {
-    let _s = await findState(state);
-    let _d = await findDistrict(_s.state_id, city);
-    let _c = await findSlots(45, _d.district_id, '09-05-2021').finally(() => setTimeout(polling, polling_interval));
+    let _s = await findState(state).catch(e => console.error('state not found', e));
+    let _d = await findDistrict(_s.state_id, city).catch(e => console.error('city not found', e));;
+    let _c = await findSlots(age, _d.district_id, date)
+                .catch(e => console.error('slot not found', e))
+                .finally(() => setTimeout(polling, polling_interval));
     
     // Do Something with this data
     let availableSlots = processCenters(_c);
@@ -86,4 +94,4 @@ let polling = async () => {
 polling().then().finally();
 
 // RUN
-// node index "Uttar Pradesh" "Meerut" 2000
+// node index --state="Uttar Pradesh" --city=Meerut --polling=2000 --age=45 --date=10-05-2021 

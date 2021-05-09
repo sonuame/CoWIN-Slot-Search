@@ -6,6 +6,7 @@
   "author": "Sunil",
   "license": "MIT",
   "dependencies": {
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "yargs": "^17.0.1"
   }
 }
