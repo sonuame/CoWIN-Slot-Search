@@ -57,13 +57,13 @@ let columnWithCorrection = (value, width) => {
 let userFriendlyPrint = (centers) => {
     let table = [];
     let center_name_width = 40;
-    table.push(`${columnWithCorrection('CENTER', center_name_width)} PINCODE\tSESSION`)
+    table.push(`${columnWithCorrection('CENTER', center_name_width)} PINCODE LATLONG\tSESSION`)
     table.push('-----------------------------------------------------------------------------');
     centers.forEach(center => {
         let sessions = center.sessions.map(m => `${m.date} - ${m.available_capacity}`).join('\t');
         let c_name = columnWithCorrection(center.name, center_name_width);
         
-        table.push(`${c_name} ${center.pincode}\t\t${sessions}`);
+        table.push(`${c_name} ${center.pincode}\t${center.latlong}\t\t${sessions}`);
     });
     table.push('-----------------------------------------------------------------------------');
     return table.join('\n');
