@@ -5,6 +5,10 @@
   "main": "index.js",
   "author": "Sunil",
   "license": "MIT",
+  "scripts": {
+    "start" : "node index --state=\"Uttar Pradesh\" --city=Meerut --polling=2000 --age=45 --date=10-05-2021",
+    "package" :"pkg index.js --out-path dist"
+  },
   "dependencies": {
     "node-fetch": "^2.6.1",
     "yargs": "^17.0.1"
