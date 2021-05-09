@@ -1,0 +1,11 @@
+{
+  "name": "CoWin",
+  "version": "1.0.0",
+  "description": "Ping Availability for vaccine slots",
+  "main": "index.js",
+  "author": "Sunil",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
+}
